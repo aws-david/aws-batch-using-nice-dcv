@@ -5,6 +5,9 @@ ENV container docker
 
 ARG AWS_REGION=eu-west-1
 
+# Add amzn2-nvidia repository
+COPY amzn2-nvidia.repo /etc/yum.repos.d/amzn2-nvidia.repo
+
 # Install tools
 RUN yum -y install tar sudo less vim lsof firewalld net-tools pciutils \
                    file wget kmod xz-utils ca-certificates binutils kbd \
@@ -31,18 +34,8 @@ RUN yum -y install glx-utils mesa-dri-drivers xorg-x11-server-Xorg \
                    gnu-free-serif-fonts desktop-backgrounds-gnome
 
 # Install Nvidia Driver, configure Xorg, install NICE DCV server
-RUN wget -q http://us.download.nvidia.com/tesla/418.87/NVIDIA-Linux-x86_64-418.87.00.run -O /tmp/NVIDIA-installer.run \
- && bash /tmp/NVIDIA-installer.run --accept-license \
-                              --no-runlevel-check \
-                              --no-questions \
-                              --no-backup \
-                              --ui=none \
-                              --no-kernel-module \
-                              --no-nouveau-check \
-                              --install-libglvnd \
-                              --no-nvidia-modprobe \
-                              --no-kernel-module-source \
- && rm -f /tmp/NVIDIA-installer.run \
+RUN yum install -y nvidia-driver-latest-dkms kmod-nvidia-latest-dkms \
+ && yum install -y cuda-drivers-fabricmanager cuda-drivers cuda system-release-nvidia \
  && nvidia-xconfig --preserve-busid \
  && rpm --import https://s3-eu-west-1.amazonaws.com/nice-dcv-publish/NICE-GPG-KEY \
  && mkdir -p /tmp/dcv-inst \
