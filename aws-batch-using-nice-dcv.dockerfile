@@ -9,7 +9,7 @@ ARG AWS_REGION=eu-west-1
 COPY amzn2-nvidia.repo /etc/yum.repos.d/amzn2-nvidia.repo
 
 # Install tools
-RUN yum -y install tar sudo less vim lsof firewalld net-tools pciutils \
+RUN yum -y install tar sudo less vim lsof net-tools pciutils \
                    file wget kmod xz-utils ca-certificates binutils kbd \
                    python3-pip bind-utils jq bc
 
