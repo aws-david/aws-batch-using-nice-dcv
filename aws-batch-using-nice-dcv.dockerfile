@@ -3,7 +3,7 @@ FROM amazonlinux:latest as dcv
 # Prepare the container to run systemd inside
 ENV container docker
 
-ARG AWS_REGION=eu-west-1
+ARG AWS_REGION=us-east-1
 
 # Add amzn2-nvidia repository
 COPY amzn2-nvidia.repo /etc/yum.repos.d/amzn2-nvidia.repo
@@ -62,6 +62,8 @@ COPY startup_script.sh /usr/local/bin
 
 # Append the startup script to be executed at the end of initialization and fix permissions
 RUN echo "/usr/local/bin/startup_script.sh" >> "/etc/rc.local" \
+ && echo "ForwardToKMsg=yes" >> "/etc/systemd/journald.conf" \
+ && echo "ForwardToConsole=yes" >> "/etc/systemd/journald.conf" \ 
  && chmod +x "/etc/rc.local" "/usr/local/bin/run_script.sh" \
              "/usr/local/bin/send_dcvsessionready_notification.sh" \
              "/usr/local/bin/startup_script.sh"
